@@ -66,9 +66,11 @@ Terms as they are used in these docs. Where a term has a broader meaning elsewhe
 
 **Variant / SKU.** A specific sellable version of a product (size, colour, pack). SKU is the merchant's stock-keeping identifier for it. Variant mapping between feed, storefront and checkout is about half of failed UCP sessions.
 
-**Conditions.** Shorthand in these docs for the terms attached to an offer: shipping rates and destinations, returns window, warranty, member or B2B pricing, promo validity. Every protocol flattens them.
+**Conditions.** Everything attached to an offer that decides whether, and on what terms, a particular buyer can take it. Not the product (catalog), not stock (inventory), not the base price (offer). Five groups: *delivery* (ships-to destinations and exclusions, methods and rates per destination and basket, free-shipping threshold, handling and transit time or delivery date, pickup, split shipments); *price qualifiers* (currency, tax included or added, duties, fees, minimum order, quantity limits, promo and coupon validity and exclusions, member, tier or B2B pricing, sale windows); *returns and after-sale* (window, who pays return shipping, restocking fee, method, refund type, exclusions, exchange terms, warranty); *buyer eligibility* (age, legal geography, account or licence, B2B-only); *order handling* (cancellation window, pre-order and backorder terms, bundles). Today they live in platform settings, promo engines and prose policy pages. Eligibility is the yes-or-no subset; landed cost is delivery and price qualifiers evaluated for one destination; transactability is all five evaluated for one buyer and basket. Every protocol flattens them; the page's schema.org slots cover delivery and returns only.
 
 **Catalog.** The description of the items a merchant sells: name, brand, category, attributes, images, GTIN. Answers "what is this thing," changes rarely, and is the same whichever merchant sells it. Distinct from **inventory** (how many, where; the merchant's, changes hourly) and from the **offer** (at what price, to which destinations, on what shipping, returns and warranty terms, right now; the merchant's, changes hourly). In agent commerce the word is stretched to mean the feed, which carries catalog plus price and stock: Shopify Catalog, Google Merchant Center feeds and Botify's AgenticCatalog are all feeds. Where these docs mean the merchant's terms, the right word is offer.
+
+**shippingDetails / hasMerchantReturnPolicy.** The two schema.org blocks inside an Offer that carry conditions on the page: shipping rates, destinations, handling and transit time and free-shipping threshold; return days, fees, method and country. Google reads them for merchant listings and warns when they are missing. Shopify's standard themes and WooCommerce core do not emit them; Wix emits the return policy. Whether browsing agents parse them is unconfirmed.
 
 **Offer.** In these docs, a variant for a destination with its price, stock and conditions. The unit the product's record is built on; no platform models it.
 
@@ -79,6 +81,12 @@ Terms as they are used in these docs. Where a term has a broader meaning elsewhe
 **Headless.** A store whose front end is custom-built and talks to the platform through APIs rather than using the platform's themes. Shopify's Hydrogen is its headless framework. Headless stores miss most default-on agent features.
 
 **Theme.** The platform-supplied templates that render a store's pages. Theme-level DOM problems (hidden variant selectors, client-rendered prices, cookie walls) are what browsing agents stall on.
+
+**Merchant-added rule.** A checkout or cart rule the merchant adds on top of the platform's own: quantity limits, PO box blocks, age gates, terms checkboxes, address widgets, delivery-date pickers. Usually written as theme scripts or page apps, because that is where a merchant can add logic without a developer, so it runs in the browser and not in the checkout pipeline. Protocol agents never trigger it. Server-side equivalents exist (Shopify Functions, WooCommerce hooks) but need code.
+
+**Relay email.** A per-order forwarding address a platform gives the merchant in place of the shopper's real email. Amazon's Buy for Me uses one. The merchant can answer order questions through it but cannot market to, recognise or re-contact the shopper.
+
+**Guest checkout.** Buying without creating an account on the store. Every agent route is guest checkout by construction except local browser agents, which use the shopper's own session.
 
 **Order hook.** A point in the platform's code where a plugin can inspect or stop an order before it is accepted. WooCommerce exposes many; Shopify exposes fewer. Where the Decide layer runs.
 
